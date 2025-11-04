@@ -1,7 +1,7 @@
 paths:
-  input_path:  "/home/data/wts_dataset_zip/videos/train" 
-  anno_path:   "/home/data/wts_dataset_zip/annotations_new/bbox_annotated/pedestrian/train" 
-  output_path: "/home/features/local/wts_dataset_zip/train" 
-  CLIP_PATH:   "/home/CLIP" 
+  input_path:  "/content/input.mp4"       # Path to your video file
+  anno_path:   ""                          # Leave empty for global feature extraction (no annotations needed)
+  output_path: "/content/features_output"  # Path where features will be saved
+  CLIP_PATH:   "/content/CLIP"             # Path to CLIP model (usually doesn't need to change)
 
-feature_type:  "local"
+feature_type: "global"  # Global feature extraction (process the whole frame, no bounding boxes)
