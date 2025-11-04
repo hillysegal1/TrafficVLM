@@ -8,13 +8,16 @@ SOLVER:
   # LOAD_FROM_EPOCH: 25
 
 DATA:
-  FPS: 3
+  FPS: 30
   MAX_OUTPUT_TOKENS: 1024
   MAIN_FEATURE: "global"
-  TRAIN_DATASETS: [
-    { "name": "wts_train_main", "ratio": -1 },
-    { "name": "wts_train_external", "ratio": -1 },
-    { "name": "wts_val_external", "ratio": -1 },
-    { "name": "wts_train_normal", "ratio": -1 },
-    { "name": "wts_val_normal", "ratio": -1 },
-  ]
+  # Set the datasets to empty or none as they are not needed for inference
+  TRAIN_DATASETS: []  # Empty list since you don’t need a training set for inference
+  VAL_DATASETS: []    # Empty list since you don’t need a validation set for inference
+  TEST_DATASETS: []   # Empty list since you don’t need a test set for inference
+
+  # Adjust any other sections if needed
+  MAX_FEATS: 100
+  FEATURES_DIM: 768
+  NUM_BINS: 100
+  SUB_FEATURE: None  # If you don't need sub features for inference
