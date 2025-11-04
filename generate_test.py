@@ -18,15 +18,10 @@ from typing import Optional, Tuple
 
 import numpy as np
 import torch
-import yaml
 
 # ----------------------------
 # Helpers
 # ----------------------------
-def _load_yaml_cfg(cfg_path: Path) -> dict:
-    with open(cfg_path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
-
 def _device_from_arg(arg: str) -> torch.device:
     if arg.lower() == "cpu":
         return torch.device("cpu")
@@ -45,7 +40,7 @@ def _auto_find_feats() -> Optional[Path]:
             return Path(hits[0])
     return None
 
-def _get(cfg: dict, dotted: str, default=None):
+def _get(cfg, dotted: str, default=None):
     """Get dotted key 'A.B.C' from nested dict-like cfg."""
     cur = cfg
     for k in dotted.split("."):
@@ -130,7 +125,12 @@ def main():
         raise FileNotFoundError(f"Config not found: {cfg_path}")
     print(str(Path.cwd()))
     print(f"Loading config from: {cfg_path}")
-    cfg = _load_yaml_cfg(cfg_path)
+
+    # Import the config file
+    sys.path.append('/content/TrafficVLM')  # Add the path to access config.py
+    import config  # Import the configuration file directly
+
+    cfg = config._C  # Access the config object from config.py
 
     print(str(Path.cwd()))
     device = _device_from_arg(args.device)
@@ -148,8 +148,12 @@ def main():
     embed_dim = int(_get(cfg, "MODEL.EMBED_DIM", default=768))
     num_bins = int(_get(cfg, "DATA.NUM_BINS", default=100))
     num_features = int(_get(cfg, "DATA.MAX_FEATS", default=100))
+    t5_path = _get(cfg, "MODEL.T5_PATH", default="t5-base")  # Get the T5 model path
+
+    # Pass T5_PATH explicitly to Vid2Seq
     model = TrafficVLM(cfg=CfgShim(cfg), tokenizer=tokenizer,
-                       num_bins=num_bins, num_features=num_features, is_eval=True)
+                       num_bins=num_bins, num_features=num_features, 
+                       t5_path=t5_path, is_eval=True)
     model.tokenizer = tokenizer
 
     model = model.to(device)
