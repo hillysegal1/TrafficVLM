@@ -147,18 +147,18 @@ def extract_features_external(filename, video_path, anno_path, output_path, feat
         if not ret:
             print(f"Error: Failed to read frame {frame_count}, exiting...")
             break
-        
-        # Debug: Check if frame is valid and print its shape
-        print(f"Processing frame {frame_count}, size: {frame.shape}")
-
-        # Process the entire frame for global/sub_global
-        if feature_type in ['global', 'sub_global']:
-            # For global or sub-global, we use the entire frame
-            x1, y1, x2, y2 = bbox_to_cut[-1]  # Use full frame for global/sub-global
-            features = process_frame(frame, (x1, y1, x2, y2), preprocess, model)
-            if features is not None:
-                imfeat.append(features)  # Add features to the list
-
+        if frame_count % frame_skip == 0:
+            # Debug: Check if frame is valid and print its shape
+            print(f"Processing frame {frame_count}, size: {frame.shape}")
+    
+            # Process the entire frame for global/sub_global
+            if feature_type in ['global', 'sub_global']:
+                # For global or sub-global, we use the entire frame
+                x1, y1, x2, y2 = bbox_to_cut[-1]  # Use full frame for global/sub-global
+                features = process_frame(frame, (x1, y1, x2, y2), preprocess, model)
+                if features is not None:
+                    imfeat.append(features)  # Add features to the list
+    
         frame_count += 1
 
     cap.release()
