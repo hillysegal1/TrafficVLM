@@ -142,11 +142,16 @@ def extract_features_external(filename, video_path, anno_path, output_path, feat
 
     imfeat = []
     frame_count = 0
+    video_fps = cap.get(cv.CAP_PROP_FPS)  # Get video FPS (e.g., 30)
+
+   if frame_count % frame_skip == 0:  # Only process every 30th frame
+       # Extract features
     while True:
         ret, frame = cap.read()
         if not ret:
             print(f"Error: Failed to read frame {frame_count}, exiting...")
             break
+        frame_skip = int(round(video_fps / target_fps))  # Calculate skip (30/1 = 30)
         if frame_count % frame_skip == 0:
             # Debug: Check if frame is valid and print its shape
             print(f"Processing frame {frame_count}, size: {frame.shape}")
